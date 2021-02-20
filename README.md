@@ -14,6 +14,12 @@ have tests, so please wait till we've reached **0.2.0**
 
 ---
 
+**install browter**
+
+```
+yarn add @donnyroufs/browter
+```
+
 ```ts
 import "@donnyroufs/browter";
 
