@@ -116,3 +116,33 @@ from the controller file or in the index.ts file.
   >  Bootstrap.ts
   >  Routes.ts
 ```
+
+# Examples
+
+## Routes.ts
+
+```ts
+import { Router } from "express";
+import {
+  ExampleMiddleware,
+  GlobalExampleMiddleware,
+} from "./Middleware/ExampleMiddleware";
+
+const router = Router();
+
+router.group("/users", (router) => {
+  router.use(GlobalExampleMiddleware);
+
+  router.get("/", "UserController.index", [ExampleMiddleware]);
+  router.post("/", "UserController.store");
+  router.get("/:id", "UserController.show", [ExampleMiddleware]);
+  router.patch("/:id", "UserController.update");
+  router.delete("/:id", "UserController.destroy");
+});
+
+router.group("/posts", (router) => {
+  router.get("/", "PostController.index", [ExampleMiddleware]);
+});
+
+export default router;
+```
