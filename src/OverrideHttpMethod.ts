@@ -2,6 +2,8 @@ import { Router as ExpressRouter } from "express";
 import { NoMethodHandlerException } from "./Exceptions/index";
 import { getController } from "./GetController";
 import { HttpMethod, Middleware } from "./Types";
+import { CatchExceptionsWrapper } from "./CatchExceptionsWrapper";
+import { config } from "./Config";
 
 export function OverrideHttpMethod(
   router: ExpressRouter,
@@ -26,6 +28,10 @@ export function OverrideHttpMethod(
       throw new NoMethodHandlerException(controllerName, handlerMethod);
     }
 
-    oldMethod(endpoint, ...middleware, endpointHandler);
+    oldMethod(
+      endpoint,
+      ...middleware,
+      config.catchExceptionsWrapper(endpointHandler)
+    );
   };
 }
