@@ -8,6 +8,7 @@ have tests, so please wait till we've reached **0.2.0**
 
 - Grouping routes
 - Binding route handlers thru controllers with a string format.
+- Wraps your controllers to catch any async errors.
 - Resourceful routes (W.I.P)
 - Have all your routes in one file with no import boilerplate!
 - Built on Typescript
