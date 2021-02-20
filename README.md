@@ -1,3 +1,5 @@
+![example](https://i.imgur.com/IHBvzm7.png)
+
 # Getting Started with Browter
 
 **Browter** gives the default Express Router some extra juice,
