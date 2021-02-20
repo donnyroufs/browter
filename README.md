@@ -1,6 +1,8 @@
 # Getting Started with Browter
 
-**Browter** gives the default Express Router some extra juice
+**Browter** gives the default Express Router some extra juice,
+at this moment it hasn't been tested in a real project nor does it 
+have tests, so please wait till milestone **0.2.0** is finished.
 
 - Grouping routes
 - Binding route handlers thru controllers with a string format.
