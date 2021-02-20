@@ -36,7 +36,7 @@ app.listen(5000, () => console.log("Server running on: http://localhost:5000"));
 
 - [x] Automatically bind controllers with their routes
 - [x] Group routes
-- [ ] Nested Grouping
+- [x] Nested Grouping
 - [ ] Scaffold resourceful routes
 
 ## Milestone 0.2
@@ -125,6 +125,8 @@ setRouterConfig({
 
 ## Routes.ts
 
+**Without nested grouping**
+
 ```ts
 import { Router } from "express";
 import {
@@ -149,4 +151,22 @@ router.group("/posts", (router) => {
 });
 
 export default router;
+```
+
+**Nested Grouping**
+
+```ts
+router.group("/users", (router) => {
+  router.use(GlobalExampleMiddleware);
+
+  router.get("/", "UserController.index", [ExampleMiddleware]);
+  router.post("/", "UserController.store");
+  router.get("/:id", "UserController.show", [ExampleMiddleware]);
+  router.patch("/:id", "UserController.update");
+  router.delete("/:id", "UserController.destroy");
+
+  router.group("/posts", (router) => {
+    router.get("/", "PostController.index");
+  });
+});
 ```
