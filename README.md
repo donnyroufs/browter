@@ -1,11 +1,14 @@
 # Getting Started with Browter
 
-Browter gives the default Express Router some extra juice
+**Browter** gives the default Express Router some extra juice
 
 - Grouping routes
 - Binding route handlers thru controllers with a string format.
 - Resourceful routes (W.I.P)
 - Have all your routes in one file with no import boilerplate!
+- Built on Typescript
+
+---
 
 ```ts
 import "@donnyroufs/browter";
@@ -75,7 +78,7 @@ router.group("/users", (router) => {
 });
 ```
 
-## Router.resource (upcoming)
+## Router.resource (milestone 0.4.0)
 
 ```ts
 router.resource("users", "UserController");
@@ -90,8 +93,10 @@ router.resource("users", "UserController");
 
 ## Controllers Path
 
-By default it tries to load the controllers from "Api/Controllers/index",
+By default it loads the controllers from "**Api/Controllers/index**",
 if you prefer a different location then you can change it like so:
+
+**NOTE:** It requires a singleton with a named export
 
 ```ts
 import { setRouterConfig } from "@donnyroufs/browter";
@@ -101,10 +106,11 @@ setRouterConfig({
 });
 ```
 
-### Example Folder Structure
+# Examples
 
-Make sure to use named exports for your controllers! You can either export a new **instance**
-from the controller file or in the index.ts file.
+## Folder Structure
+
+**Browter** is built on top of this folder structure, however you can change it to anything you prefer.
 
 ```
 >  src
@@ -116,8 +122,6 @@ from the controller file or in the index.ts file.
   >  Bootstrap.ts
   >  Routes.ts
 ```
-
-# Examples
 
 ## Routes.ts
 
