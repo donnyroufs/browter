@@ -26,6 +26,7 @@ app.listen(5000, () => console.log("Server running on: http://localhost:5000"));
 
 - [x] Automatically bind controllers with their routes
 - [x] Group routes
+- [ ] Nested Grouping
 - [ ] Scaffold resourceful routes
 
 ## Milestone 0.2
@@ -41,14 +42,15 @@ app.listen(5000, () => console.log("Server running on: http://localhost:5000"));
 
 ## Milestone 0.3
 
-_Scaffold resourceful routes_
+_Nested Grouping of routes_
 
 ## Milestone 0.4
 
-_Support for other routers_
+_Scaffold resourceful routes_
 
 ## Milestone 0.5
 
+_Support for other routers_
 _Create an express factory that returns the modified version_
 
 # API
