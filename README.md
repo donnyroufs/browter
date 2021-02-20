@@ -5,6 +5,7 @@ Browter gives the default Express Router some extra juice
 - Grouping routes
 - Binding route handlers thru controllers with a string format.
 - Resourceful routes (W.I.P)
+- Have all your routes in one file with no import boilerplate!
 
 ```ts
 import "@donnyroufs/browter";
@@ -98,4 +99,20 @@ import { setRouterConfig } from "@donnyroufs/browter";
 setRouterConfig({
   controllersDir: "App/Api/Controllers/Http/index",
 });
+```
+
+### Example Folder Structure
+
+Make sure to use named exports for your controllers! You can either export a new **instance**
+from the controller file or in the index.ts file.
+
+```
+>  src
+  >  Api
+    >  Controllers
+      > index.ts
+      > Http
+        > User.controller.ts
+  >  Bootstrap.ts
+  >  Routes.ts
 ```
