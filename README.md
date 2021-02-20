@@ -66,6 +66,8 @@ _Create an express factory that returns the modified version_
 > Router[GET | POST | PATCH | PUT | DELETE | HEAD | ALL]
 
 ```ts
+const router = express.Router();
+
 router.group("/users", (router) => {
   router.get("/", "UserController.index");
   router.get("/:id", "UserController.show", [withUserMiddleware]);
@@ -83,4 +85,17 @@ router.resource("users", "UserController");
   [PATCH/PUT] /users/:id    -  UserController.update
   [DELETE] /users/:id       -  UserController.destroy
 */
+```
+
+## Controllers Path
+
+By default it tries to load the controllers from "Api/Controllers/index",
+if you prefer a different location then you can change it like so:
+
+```ts
+import { setRouterConfig } from "@donnyroufs/browter";
+
+setRouterConfig({
+  controllersDir: "App/Api/Controllers/Http/index",
+});
 ```
