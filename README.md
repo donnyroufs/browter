@@ -1,4 +1,10 @@
-# Getting Started with Awesome Router
+# Getting Started with Browter
+
+Browter gives the default Express Router some extra juice
+
+- Grouping routes
+- Binding route handlers thru controllers with a string format.
+- Resourceful routes (W.I.P)
 
 ```ts
 import "@donnyroufs/browter";
