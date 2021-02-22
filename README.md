@@ -1,183 +1,106 @@
-![example](https://i.imgur.com/IHBvzm7.png)
+# Browter makes routing simple and organized
 
-# Getting Started with Browter
+![example](https://i.imgur.com/oegU7K0.png)
 
-**Browter** gives the default Express Router some extra juice,
-at this moment it hasn't been tested in a real project nor does it
-have tests, so please wait till we've reached **0.2.0**
+**Browter** is a wrapper for Express router which will make working with it's router an ease. Eventually the goal of **Browter** would be to be generic and use several adapters for all kinds of Routers. I created this because to me it **was** a nuance having to create multiple routers and splitting code in order to have some kind of _organized_ code.
 
-- Grouping routes
-- Binding route handlers thru controllers with a string format.
-- Wraps your controllers to catch any async errors.
-- Resourceful routes (W.I.P)
-- Have all your routes in one file with no import boilerplate!
-- Built on Typescript
+- Group Routes by namespace.
+- No more imports for your controllers. **Browter** will bind them for you.
+- Have the option to have many groups in one. This allows for resourceful routes.
+- It wraps your route handlers to catch any errors which you can handle at the top level.
+- Have all your routes in one file with as final result some eye candy.
+- Built on Typescript.
 
----
+**In progress**
 
-**install browter**
+- Losing the Express dependency and having seperate packages for Router Adapters. This will make **Browter** flexible to use with any other framework/router.
+- Resourceful routes generation.
 
-```
-yarn add @donnyroufs/browter
-```
+# Getting started with Browter
 
-```ts
-import "@donnyroufs/browter";
+## Install package
 
-import express, { Router } from "express";
-
-const app = express();
-const apiRouter = Router();
-
-apiRouter.group("users", (router) => {
-  router.get("/", "UserController.index");
-});
-
-apiRouter.group("posts", (router) => {
-  router.get("/", "PostController.index");
-  router.post("/", "PostController.store");
-});
-
-app.use("/api/v1", apiRouter);
-
-app.listen(5000, () => console.log("Server running on: http://localhost:5000"));
-```
-
-## Features
-
-- [x] Automatically bind controllers with their routes
-- [x] Group routes
-- [x] Nested Grouping
-- [ ] Scaffold resourceful routes
-
-## Milestone 0.2
-
-- [x] Create an express router wrapper
-- [x] Allow to create routes which dynamically find the controller methods
-- [x] Set middleware for each route
-- [x] Set default Path for controllers
-- [x] Group Routes
-- [x] Fix types
-- [ ] Add tests
-- [ ] Add JSDocs
-
-## Milestone 0.3
-
-_Nested Grouping of routes_
-
-## Milestone 0.4
-
-_Scaffold resourceful routes_
-
-## Milestone 0.5
-
-_Support for other routers_
-_Create an express factory that returns the modified version_
-
-# API
-
-## Router.group
-
-> Router[GET | POST | PATCH | PUT | DELETE | HEAD | ALL]
-
-```ts
-const router = express.Router();
-
-router.group("/users", (router) => {
-  router.get("/", "UserController.index");
-  router.get("/:id", "UserController.show", [withUserMiddleware]);
-});
-```
-
-## Router.resource (milestone 0.4.0)
-
-```ts
-router.resource("users", "UserController");
-/*
-  [GET] /users              -  UserController.index
-  [POST] /users             -  UserController.store
-  [GET] /users/:id          -  UserController.show
-  [PATCH/PUT] /users/:id    -  UserController.update
-  [DELETE] /users/:id       -  UserController.destroy
-*/
-```
-
-## Controllers Path
-
-By default it loads the controllers from "**Api/Controllers/index**",
-if you prefer a different location then you can change it like so:
-
-**NOTE:** It requires a singleton with a named export
-
-```ts
-import { setRouterConfig } from "@donnyroufs/browter";
-
-setRouterConfig({
-  controllersDir: "App/Api/Controllers/Http/index",
-});
-```
-
-# Examples
-
-## Folder Structure
-
-**Browter** is built on top of this folder structure, however you can change it to anything you prefer.
+### Yarn
 
 ```
->  src
-  >  Api
-    >  Controllers
-      > index.ts
-      > Http
-        > User.controller.ts
-  >  Bootstrap.ts
-  >  Routes.ts
+$ yarn add @donnyroufs/browter
+```
+
+### Npm
+
+```
+$ npm install @donnyroufs/browter
 ```
 
 ## Routes.ts
 
-**Without nested grouping**
-
 ```ts
-import { Router } from "express";
-import {
-  ExampleMiddleware,
-  GlobalExampleMiddleware,
-} from "./Middleware/ExampleMiddleware";
+import { Browter } from '@donnyroufs/browter'
 
-const router = Router();
+const browter = new Browter()
 
-router.group("/users", (router) => {
-  router.use(GlobalExampleMiddleware);
+browter.group('/api/v1', (browter) => {
+  browter.get('/', 'CoreController.index')
 
-  router.get("/", "UserController.index", [ExampleMiddleware]);
-  router.post("/", "UserController.store");
-  router.get("/:id", "UserController.show", [ExampleMiddleware]);
-  router.patch("/:id", "UserController.update");
-  router.delete("/:id", "UserController.destroy");
-});
+  browter.group('users', (browter) => {
+    browter.get('/', 'UserController.index')
 
-router.group("/posts", (router) => {
-  router.get("/", "PostController.index", [ExampleMiddleware]);
-});
+    browter.group('posts', (browter) => {
+      browter.post('/', 'PostController.store')
+    })
+  })
 
-export default router;
+  browter.group('verifications', (browter) => {
+    browter.get('/', 'VerificationController.index', [isAuth])
+  })
+})
+
+export default browter.build()
 ```
 
-**Nested Grouping**
+## Which will create:
+
+| Http Method | Endpoint              | Controller             | Route handler |
+| ----------- | --------------------- | ---------------------- | ------------- |
+| GET         | /api/v1/              | CoreController         | index         |
+| GET         | /api/v1/users         | UserController         | index         |
+| POST        | /api/v1/users/posts   | PostController         | store         |
+| GET         | /api/v1/verifications | VerificationController | isAuth, index |
+
+## Example Http Controller
+
+> It's recommended to have one Composite Root where you setup all your controllers with it's required dependencies.
 
 ```ts
-router.group("/users", (router) => {
-  router.use(GlobalExampleMiddleware);
+class UserController {
+  async index(req: Request, res: Response) {
+    res.send('Hello World!')
+  }
+}
 
-  router.get("/", "UserController.index", [ExampleMiddleware]);
-  router.post("/", "UserController.store");
-  router.get("/:id", "UserController.show", [ExampleMiddleware]);
-  router.patch("/:id", "UserController.update");
-  router.delete("/:id", "UserController.destroy");
-
-  router.group("/posts", (router) => {
-    router.get("/", "PostController.index");
-  });
-});
+export userController = new UserController()
 ```
+
+## App.ts, initialize Browter with an Express app
+
+```ts
+import express from 'express'
+import ApiRoutes from './Routes.ts'
+
+const app = express()
+
+app.use(ApiRoutes)
+
+app.listen(5000)
+```
+
+## Current Milestones
+
+- [x] v0.1.1 | Automatically bind controllers with their routes
+- [x] v0.1.2 | Group routes by namespace
+- [x] v0.1.3 | Nested Grouping
+- [x] v0.1.4 | Catch errors in route handlers and handel at the top level
+- [x] v0.1.5 | Rewrite current API to remove magic and allow for adapters in the future
+- [ ] v0.1.6 | Scaffold resourceful routes
+- [ ] v0.1.7 | Remove Express dependency and use adapters to make Browter flexible for any router.
+- [ ] v0.1.8 | Generate docs out of JSDocs and host it.
