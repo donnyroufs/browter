@@ -31,14 +31,11 @@ export class Browter implements IBrowter {
   private catchExceptionsHandler: typeof CatchExceptionsHandler
   private logExceptions: boolean
 
-  constructor(
-    expressRouter: typeof ExpressRouter,
-    options: IBrowterOptions = DefaultOptions
-  ) {
+  constructor(options: IBrowterOptions = DefaultOptions) {
     this.validateOptions(options)
 
-    this.expressRouter = expressRouter
-    this.router = expressRouter()
+    this.expressRouter = ExpressRouter
+    this.router = ExpressRouter()
 
     this.controllers = require(options.controllersDir!)
     this.logExceptions = options.logExceptions!
@@ -60,7 +57,7 @@ export class Browter implements IBrowter {
     callback: (router: Omit<Browter, 'build' | 'routes'>) => void
   ) {
     const route = this.createRouteFromNamespace(namespace)
-    const browter = new Browter(this.expressRouter, {
+    const browter = new Browter({
       controllersDir: this.controllersDir,
       catchExceptionsHandler: this.catchExceptionsHandler,
     })
