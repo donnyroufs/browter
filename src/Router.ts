@@ -1,7 +1,6 @@
 // TODO: Remove dependency by using adapters
 import { Router as ExpressRouter } from 'express'
 
-import { getController } from './GetController'
 import {
   MissingDotInHandlerPath,
   NoControllerException,
@@ -182,7 +181,7 @@ export class Browter implements IBrowter {
     controllerName: string,
     handlerName: string
   ) {
-    const controller = getController(this.controllers, controllerName)
+    const controller = this.getController(this.controllers, controllerName)
 
     if (!controller) {
       throw new NoControllerException(controllerName)
@@ -220,5 +219,17 @@ export class Browter implements IBrowter {
     if (!options.catchExceptionsHandler) {
       DefaultOptions.catchExceptionsHandler
     }
+  }
+
+  private getController(controllers: any, controllerName: string) {
+    const result = Object.entries(controllers).find(
+      ([name]) => name.toLowerCase() === controllerName.toLowerCase()
+    ) as [any, any]
+
+    if (!result) {
+      throw new NoControllerException(controllerName)
+    }
+
+    return result[1]
   }
 }
