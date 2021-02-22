@@ -1,16 +1,14 @@
 import { Request, Response, NextFunction } from 'express'
 
-export function CatchExceptionsHandler(routeHandler: any) {
+export function CatchExceptionsHandler(
+  routeHandler: any,
+  logExceptions: boolean = false
+) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       await routeHandler(req, res)
     } catch (err) {
-      if (
-        process.env.NODE_ENV === 'dev' ||
-        process.env.NODE_ENV === 'development'
-      ) {
-        console.log(err)
-      }
+      if (logExceptions) console.log(err)
       next(err)
     }
   }

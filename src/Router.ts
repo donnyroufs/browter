@@ -29,6 +29,7 @@ export class Browter implements IBrowter {
   private controllers: unknown[] = []
   private controllersDir: string
   private catchExceptionsHandler: typeof CatchExceptionsHandler
+  private logExceptions: boolean
 
   constructor(
     expressRouter: typeof ExpressRouter,
@@ -38,8 +39,9 @@ export class Browter implements IBrowter {
 
     this.expressRouter = expressRouter
     this.router = expressRouter()
-    // TODO: Fix types
+
     this.controllers = require(options.controllersDir!)
+    this.logExceptions = options.logExceptions!
     this.controllersDir = options.controllersDir!
     this.catchExceptionsHandler = options.catchExceptionsHandler!
   }
@@ -170,7 +172,11 @@ export class Browter implements IBrowter {
       handlerName
     )
 
-    this.router[verb](endpoint, ...middleware, routeHandler)
+    this.router[verb](
+      endpoint,
+      ...middleware,
+      this.catchExceptionsHandler(routeHandler, this.logExceptions)
+    )
   }
 
   private createRouteFromNamespace(namespace: string) {
@@ -217,7 +223,11 @@ export class Browter implements IBrowter {
     }
 
     if (!options.catchExceptionsHandler) {
-      DefaultOptions.catchExceptionsHandler
+      options.catchExceptionsHandler = DefaultOptions.catchExceptionsHandler
+    }
+
+    if (!options.logExceptions) {
+      options.logExceptions = DefaultOptions.logExceptions
     }
   }
 
