@@ -1,12 +1,17 @@
 {
   "name": "@donnyroufs/browter",
   "version": "0.1.4",
+  "homepage": "https://github.com/donnyroufs/browter",
+  "author": {
+    "name": "Donny Roufs",
+    "email": "iamchets@yahoo.com"
+  },
   "source": "src/index.ts",
   "main": "dist/index.js",
   "module": "dist/index.module.js",
   "unpkg": "dist/index.umd.js",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/test.ts",
+    "dev": "ts-node-dev --respawn --transpile-only examples/playground/bootstrap.ts",
     "build": "microbundle",
     "run:dev": "microbundle watch",
     "test": "jest --watch"
@@ -23,5 +28,8 @@
     "ts-node-dev": "^1.1.1",
     "typescript": "^4.1.5"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "files": [
+    "dist"
+  ]
 }

@@ -1,41 +1,38 @@
-import { IRouter, NextFunction, Request, Response } from "express";
-import { ParamsDictionary } from "express-serve-static-core";
+import { CatchExceptionsHandler } from './CatchExceptionsHandler'
 
-export type RouteHandlerFn = (
-  req: Request<ParamsDictionary, any, any, any, Record<string, any>>,
-  res: Response<any, Record<string, any>>,
-  next: NextFunction
-) => void;
-
-export type Middleware = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => void;
+// TODO: Fix type
+export type Middleware = any
 
 export type RouteHandler = (
   endpoint: string,
   handler: string,
   middleware?: Middleware[]
-) => void;
+) => void
 
 export type HttpMethod =
-  | "get"
-  | "post"
-  | "put"
-  | "patch"
-  | "delete"
-  | "head"
-  | "all";
+  | 'get'
+  | 'post'
+  | 'put'
+  | 'patch'
+  | 'delete'
+  | 'head'
+  | 'all'
 
-export interface IBrowter extends Omit<IRouter, HttpMethod> {
-  get: RouteHandler;
-  post: RouteHandler;
-  put: RouteHandler;
-  patch: RouteHandler;
-  delete: RouteHandler;
-  head: RouteHandler;
+export type GroupCallbackFn = (router: IBrowter) => void
+export type createRoutesCallbackFn = (router: IBrowter) => any
+
+export type IBrowter = Record<
+  HttpMethod,
+  (endpoint: string, handlerPath: string, middleware?: Middleware[]) => void
+> & {
+  build: () => unknown
 }
+// TODO: Implement
+export interface IRouterAdapter {}
 
-export type GroupCallbackFn = (router: IBrowter) => void;
-export type createRoutesCallbackFn = (router: IBrowter) => any;
+// TODO: Could become troublesome when moving to adapters
+export interface IBrowterOptions {
+  controllersDir?: string
+  catchExceptionsHandler?: typeof CatchExceptionsHandler
+  logExceptions?: boolean
+}
