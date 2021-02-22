@@ -94,6 +94,26 @@ app.use(ApiRoutes)
 app.listen(5000)
 ```
 
+## Change the controllers directory
+
+By default Browter will look for controllers in `src/Api/Controllers` but if that doesn't fit with your architecture then you can change it's options like so
+
+```ts
+new Browter({
+  controllersDir: Path.resolve('./src/Api/Controller/Http"
+})
+```
+
+## Replace the exception handler
+
+Perhaps you want to listen to certain types of exceptions, then you can simply replace the default one!
+
+```ts
+new Browter({
+  catchExceptionHandler: yourAwesomeExceptionHandler,
+})
+```
+
 ## Current Milestones
 
 - [x] v0.1.1 | Automatically bind controllers with their routes
