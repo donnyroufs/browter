@@ -99,7 +99,7 @@ app.listen(5000)
 - [x] v0.1.1 | Automatically bind controllers with their routes
 - [x] v0.1.2 | Group routes by namespace
 - [x] v0.1.3 | Nested Grouping
-- [x] v0.1.4 | Catch errors in route handlers and handel at the top level
+- [x] v0.1.4 | Catch errors in route handlers and handle at the top level
 - [x] v0.1.5 | Rewrite current API to remove magic and allow for adapters in the future
 - [ ] v0.1.6 | Scaffold resourceful routes
 - [ ] v0.1.7 | Remove Express dependency and use adapters to make Browter flexible for any router.
