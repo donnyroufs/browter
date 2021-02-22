@@ -27,8 +27,6 @@ export type IBrowter = Record<
 > & {
   build: () => unknown
 }
-// TODO: Implement
-export interface IRouterAdapter {}
 
 // TODO: Could become troublesome when moving to adapters
 export interface IBrowterOptions {
