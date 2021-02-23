@@ -12,6 +12,7 @@
   "unpkg": "dist/index.umd.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only examples/playground/bootstrap.ts",
+    "run:example-rest": "ts-node-dev --respawn --transpile-only examples/rest-api/bootstrap.ts",
     "build": "microbundle",
     "run:dev": "microbundle watch",
     "test": "jest --watch"
