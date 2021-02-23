@@ -1,14 +1,12 @@
 // TODO: Remove dependency by using adapters
 import { Router as ExpressRouter } from 'express'
-
 import {
   MissingDotInHandlerPath,
   NoControllerException,
   NoMethodHandlerException,
 } from './Exceptions'
 import { HttpMethod, IBrowter, IBrowterOptions, Middleware } from './Types'
-import { CatchExceptionsHandler } from './CatchExceptionsHandler'
-import { DefaultOptions } from './DefaultOptions'
+import { Options, DefaultOptions } from './Options'
 
 /**
  * @description
@@ -27,20 +25,14 @@ export class Browter implements IBrowter {
   private router: ExpressRouter
   private expressRouter: typeof ExpressRouter
   private controllers: unknown[] = []
-  private controllersDir: string
-  private catchExceptionsHandler: typeof CatchExceptionsHandler
-  private logExceptions: boolean
+  private options: IBrowterOptions = new Options()
 
-  constructor(options: IBrowterOptions = DefaultOptions) {
-    this.validateOptions(options)
-
+  constructor(options?: Partial<IBrowterOptions>) {
     this.expressRouter = ExpressRouter
     this.router = ExpressRouter()
 
-    this.controllers = require(options.controllersDir!)
-    this.logExceptions = options.logExceptions!
-    this.controllersDir = options.controllersDir!
-    this.catchExceptionsHandler = options.catchExceptionsHandler!
+    this.options = new Options({ ...DefaultOptions, ...options })
+    this.controllers = require(this.options.controllersDir)
   }
 
   /**
@@ -57,10 +49,7 @@ export class Browter implements IBrowter {
     callback: (router: Omit<Browter, 'build' | 'routes'>) => void
   ) {
     const route = this.createRouteFromNamespace(namespace)
-    const browter = new Browter({
-      controllersDir: this.controllersDir,
-      catchExceptionsHandler: this.catchExceptionsHandler,
-    })
+    const browter = new Browter(this.options)
 
     callback(browter)
 
@@ -172,7 +161,10 @@ export class Browter implements IBrowter {
     this.router[verb](
       endpoint,
       ...middleware,
-      this.catchExceptionsHandler(routeHandler, this.logExceptions)
+      this.options.catchExceptionsHandler(
+        routeHandler,
+        this.options.logExceptions
+      )
     )
   }
 
@@ -212,20 +204,6 @@ export class Browter implements IBrowter {
     }
 
     return handler.split('.') as [string, string]
-  }
-
-  private validateOptions(options: IBrowterOptions) {
-    if (!options.controllersDir) {
-      options.controllersDir = DefaultOptions.controllersDir
-    }
-
-    if (!options.catchExceptionsHandler) {
-      options.catchExceptionsHandler = DefaultOptions.catchExceptionsHandler
-    }
-
-    if (!options.logExceptions) {
-      options.logExceptions = DefaultOptions.logExceptions
-    }
   }
 
   private getController(controllers: any, controllerName: string) {
