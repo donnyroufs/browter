@@ -8,4 +8,8 @@ export class CoreController extends BaseController {
   async index(req, res) {
     res.json(this.dep())
   }
+
+  async throw(req, res) {
+    throw new Error('Something went wrong here')
+  }
 }
