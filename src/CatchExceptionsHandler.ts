@@ -6,7 +6,7 @@ export function CatchExceptionsHandler(
 ) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      return routeHandler(req, res)
+      return await routeHandler(req, res)
     } catch (err) {
       if (logExceptions) console.log(err)
       return next(err)
