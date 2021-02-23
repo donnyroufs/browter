@@ -121,6 +121,26 @@ new Browter({
 })
 ```
 
+## Losing the context of this because of the exceptions wrapper
+
+The autoBindMethods will make sure that the context stays within the controller
+
+```ts
+export class BaseController {
+  constructor() {
+    this.autoBindMethods()
+  }
+
+  protected autoBindMethods() {
+    const methods = Object.getOwnPropertyNames(Object.getPrototypeOf(this))
+
+    methods
+      .filter((method) => method !== 'constructor')
+      .forEach((method) => (this[method] = this[method].bind(this)))
+  }
+}
+```
+
 ## Current Milestones
 
 - [x] v0.1.1 | Automatically bind controllers with their routes
