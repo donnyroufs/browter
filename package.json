@@ -1,6 +1,6 @@
 {
   "name": "@donnyroufs/browter",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "homepage": "https://github.com/donnyroufs/browter",
   "author": {
     "name": "Donny Roufs",
@@ -32,5 +32,15 @@
   "license": "MIT",
   "files": [
     "dist"
+  ],
+  "keywords": [
+    "express",
+    "router",
+    "adapters",
+    "grouping",
+    "namespaces",
+    "clean",
+    "micro",
+    "library"
   ]
 }
