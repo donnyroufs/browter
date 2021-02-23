@@ -89,6 +89,13 @@ import ApiRoutes from './Routes.ts'
 
 const app = express()
 
+// Middleware which gets called when an exception gets thrown
+this.server.use((err, req, res, next) => {
+  res.json({
+    statusCode: 400,
+  })
+})
+
 app.use(ApiRoutes)
 
 app.listen(5000)
@@ -100,13 +107,13 @@ By default Browter will look for controllers in `src/Api/Controllers` but if tha
 
 ```ts
 new Browter({
-  controllersDir: Path.resolve('./src/Api/Controller/Http"
+  controllersDir: Path.resolve('./src/Api/Controller/Http")
 })
 ```
 
 ## Replace the exception handler
 
-Perhaps you want to listen to certain types of exceptions, then you can simply replace the default one!
+Incase you are not happy about the current exception handler/wrapper like so:
 
 ```ts
 new Browter({
@@ -121,6 +128,7 @@ new Browter({
 - [x] v0.1.3 | Nested Grouping
 - [x] v0.1.4 | Catch errors in route handlers and handle at the top level
 - [x] v0.1.5 | Rewrite current API to remove magic and allow for adapters in the future
-- [ ] v0.1.6 | Scaffold resourceful routes
-- [ ] v0.1.7 | Remove Express dependency and use adapters to make Browter flexible for any router.
-- [ ] v0.1.8 | Generate docs out of JSDocs and host it.
+- [ ] v0.1.6 | Mainly bug fixes
+- [ ] v0.1.7 | Scaffold resourceful routes
+- [ ] v0.2.0 | Remove Express dependency and use adapters to make Browter flexible for any router.
+- [ ] v0.2.0 | Generate docs out of JSDocs and host it.
