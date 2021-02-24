@@ -22,7 +22,6 @@ export class Browter implements IBrowter {
     options?: Partial<IBrowterOptions>
   ) {
     this.routerAdapter = routerAdapter
-    this.routerAdapter.create()
 
     this.options = new Options({ ...DefaultOptions, ...options })
     this.controllers = require(this.options.controllersDir)
