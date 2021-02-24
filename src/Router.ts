@@ -1,12 +1,11 @@
-// TODO: Remove dependency by using adapters
-import { Router as ExpressRouter } from 'express'
+import { HttpMethod, IBrowter, IBrowterOptions, Middleware } from './Types'
+import { Options, DefaultOptions } from './Options'
+import { IRouterAdapter } from './Adapters/IRouterAdapter'
 import {
   MissingDotInHandlerPath,
   NoControllerException,
   NoMethodHandlerException,
 } from './Exceptions'
-import { HttpMethod, IBrowter, IBrowterOptions, Middleware } from './Types'
-import { Options, DefaultOptions } from './Options'
 
 /**
  * @description
@@ -14,22 +13,16 @@ import { Options, DefaultOptions } from './Options'
  * returns the created routes in the required type.
  */
 export class Browter implements IBrowter {
-  /**
-   * @description
-   * Get all the current routes.
-   */
-  get routes() {
-    return this.router.stack
-  }
-
-  private router: ExpressRouter
-  private expressRouter: typeof ExpressRouter
+  private routerAdapter: IRouterAdapter<unknown, unknown>
   private controllers: unknown[] = []
   private options: IBrowterOptions = new Options()
 
-  constructor(options?: Partial<IBrowterOptions>) {
-    this.expressRouter = ExpressRouter
-    this.router = ExpressRouter()
+  constructor(
+    routerAdapter: IRouterAdapter<unknown, unknown>,
+    options?: Partial<IBrowterOptions>
+  ) {
+    this.routerAdapter = routerAdapter
+    this.routerAdapter.create()
 
     this.options = new Options({ ...DefaultOptions, ...options })
     this.controllers = require(this.options.controllersDir)
@@ -49,11 +42,15 @@ export class Browter implements IBrowter {
     callback: (router: Omit<Browter, 'build' | 'routes'>) => void
   ) {
     const route = this.createRouteFromNamespace(namespace)
-    const browter = new Browter(this.options)
+
+    const browter = new Browter(
+      this.routerAdapter.create() as any,
+      this.options
+    )
 
     callback(browter)
 
-    this.router.use(route, browter.router)
+    this.routerAdapter.use(route, browter.routerAdapter.router)
   }
 
   /**
@@ -61,9 +58,10 @@ export class Browter implements IBrowter {
    * Returns the actual router based on the used adapter.
    */
   public build() {
-    return this.router
+    return this.routerAdapter.build()
   }
 
+  //#region router methods
   public get(endpoint: string, handlerPath: string, middleware?: Middleware[]) {
     this.setHandlerAndMiddlewareForVerb(
       'get',
@@ -143,6 +141,7 @@ export class Browter implements IBrowter {
       middleware
     )
   }
+  //#endregion
 
   private setHandlerAndMiddlewareForVerb(
     verb: HttpMethod,
@@ -158,14 +157,13 @@ export class Browter implements IBrowter {
       handlerName
     )
 
-    this.router[verb](
+    this.routerAdapter.route({
+      verb,
       endpoint,
-      ...middleware,
-      this.options.catchExceptionsHandler(
-        routeHandler,
-        this.options.logExceptions
-      )
-    )
+      middleware,
+      routeHandler,
+      handlerPath,
+    })
   }
 
   private createRouteFromNamespace(namespace: string) {

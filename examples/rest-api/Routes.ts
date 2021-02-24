@@ -1,14 +1,17 @@
 import Path from 'path'
 
-import { Browter } from '../../src/index'
+import { Router as ExpressRouter } from 'express'
+import { Browter, ExpressToBrowterAdapter } from '../../src/index'
+
 import { LoggerMiddleware } from './Api/Middleware/Logger.middleware'
 
 // For this example the relative path is wrong so we need to overwrite it.
-const controllersDir = Path.resolve('./examples/rest-api/Api/Controllers/index')
+const options = {
+  controllersDir: Path.resolve('./examples/rest-api/Api/Controllers/index'),
+}
 
-const browter = new Browter({
-  controllersDir,
-})
+const adaptee = new ExpressToBrowterAdapter(ExpressRouter)
+const browter = new Browter(adaptee, options)
 
 // Example of middleware usage
 browter.get('/', 'CoreController.index', [LoggerMiddleware])
