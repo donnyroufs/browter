@@ -29,4 +29,5 @@ browter.group('users', (browter) => {
   })
 })
 
+// TOOO: Fix type
 export default browter.build()

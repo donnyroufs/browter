@@ -8,8 +8,7 @@ import {
 
 export type ExpressRouterFactory = () => Router
 
-export class ExpressToBrowterAdapter
-  implements IRouterAdapter<ExpressRouterFactory, Router> {
+export class ExpressToBrowterAdapter implements IRouterAdapter {
   public adaptee: ExpressRouterFactory
   public router: Router
   public logExceptions: boolean

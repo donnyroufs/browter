@@ -13,12 +13,12 @@ import {
  * returns the created routes in the required type.
  */
 export class Browter implements IBrowter {
-  private routerAdapter: IRouterAdapter<unknown, unknown>
+  private routerAdapter: IRouterAdapter
   private controllers: unknown[] = []
   private options: IBrowterOptions = new Options()
 
   constructor(
-    routerAdapter: IRouterAdapter<unknown, unknown>,
+    routerAdapter: IRouterAdapter,
     options?: Partial<IBrowterOptions>
   ) {
     this.routerAdapter = routerAdapter
