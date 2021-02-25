@@ -8,9 +8,9 @@ export interface IRouteContext {
   routeHandler: any
 }
 
-export interface IRouterAdapter {
+export interface IRouterAdapter<T> {
   adaptee: unknown
-  router: unknown
+  router: T
   logExceptions: boolean
 
   use(namespace: string, router: unknown): void

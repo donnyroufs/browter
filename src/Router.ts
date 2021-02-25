@@ -12,13 +12,13 @@ import {
  * Browter adds more juice to the given Router and then
  * returns the created routes in the required type.
  */
-export class Browter implements IBrowter {
-  private routerAdapter: IRouterAdapter
+export class Browter<T> implements IBrowter {
+  private routerAdapter: IRouterAdapter<T>
   private controllers: unknown[] = []
   private options: IBrowterOptions = new Options()
 
   constructor(
-    routerAdapter: IRouterAdapter,
+    routerAdapter: IRouterAdapter<T>,
     options?: Partial<IBrowterOptions>
   ) {
     this.routerAdapter = routerAdapter
@@ -38,7 +38,7 @@ export class Browter implements IBrowter {
    */
   public group(
     namespace: string,
-    callback: (router: Omit<Browter, 'build' | 'routes'>) => void
+    callback: (router: Omit<Browter<T>, 'build' | 'routes'>) => void
   ) {
     const route = this.createRouteFromNamespace(namespace)
 
@@ -57,7 +57,7 @@ export class Browter implements IBrowter {
    * Returns the actual router based on the used adapter.
    */
   public build() {
-    return this.routerAdapter.build()
+    return this.routerAdapter.build() as T
   }
 
   //#region router methods

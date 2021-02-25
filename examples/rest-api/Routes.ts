@@ -11,7 +11,7 @@ const options = {
 }
 
 const adaptee = new ExpressToBrowterAdapter(ExpressRouter)
-const browter = new Browter(adaptee, options)
+const browter = new Browter<ExpressRouter>(adaptee, options)
 
 // Example of middleware usage
 browter.get('/', 'CoreController.index', [LoggerMiddleware])
@@ -29,5 +29,4 @@ browter.group('users', (browter) => {
   })
 })
 
-// TOOO: Fix type
 export default browter.build()
