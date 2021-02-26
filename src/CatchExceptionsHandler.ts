@@ -1,5 +1,10 @@
 import { Request, Response, NextFunction } from 'express'
 
+export type CatchExceptionsHandlerFn = (
+  routeHandler: any,
+  logExceptions: boolean
+) => any
+
 export function CatchExceptionsHandler(
   routeHandler: any,
   logExceptions: boolean = false

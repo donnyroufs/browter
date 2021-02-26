@@ -30,6 +30,4 @@ export type IBrowter = Record<
 // TODO: Could become troublesome when moving to adapters
 export interface IBrowterOptions {
   controllersDir: string
-  catchExceptionsHandler: typeof CatchExceptionsHandler
-  logExceptions: boolean
 }
