@@ -148,7 +148,7 @@ export class BaseController {
 - [x] v0.1.3 | Nested Grouping
 - [x] v0.1.4 | Catch errors in route handlers and handle at the top level
 - [x] v0.1.5 | Rewrite current API to remove magic and allow for adapters in the future
-- [ ] v0.1.6 | Mainly bug fixes
-- [ ] v0.1.7 | Scaffold resourceful routes
+- [x] v0.1.6 | Mainly bug fixes
+- [ ] v0.1.9 | Scaffold resourceful routes
 - [ ] v0.2.0 | Remove Express dependency and use adapters to make Browter flexible for any router.
 - [ ] v0.2.0 | Generate docs out of JSDocs and host it.

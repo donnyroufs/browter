@@ -1,6 +1,6 @@
 {
   "name": "@donnyroufs/browter",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "homepage": "https://github.com/donnyroufs/browter",
   "author": {
     "name": "Donny Roufs",
@@ -17,16 +17,8 @@
     "run:dev": "microbundle watch",
     "test": "jest --watch"
   },
-  "dependencies": {
-    "@types/koa": "^2.13.0",
-    "express": "^4.17.1",
-    "koa": "^2.13.1",
-    "koa-router": "^10.0.0"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "@types/express": "^4.17.11",
-    "@types/jest": "^26.0.20",
-    "@types/koa-router": "^7.4.1",
     "jest": "^26.6.3",
     "microbundle": "^0.13.0",
     "ts-jest": "^26.5.1",
