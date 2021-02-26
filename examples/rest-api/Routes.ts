@@ -1,7 +1,8 @@
 import Path from 'path'
 
 import { Router as ExpressRouter } from 'express'
-import { Browter, ExpressToBrowterAdapter } from '../../src/index'
+import { ExpressToBrowterAdapter } from '../../../browter-adapters/express/src'
+import { Browter } from '../../src'
 
 import { LoggerMiddleware } from './Api/Middleware/Logger.middleware'
 
@@ -11,7 +12,7 @@ const options = {
 }
 
 const adaptee = new ExpressToBrowterAdapter(ExpressRouter)
-const browter = new Browter(adaptee, options)
+const browter = new Browter<ExpressRouter>(adaptee, options)
 
 // Example of middleware usage
 browter.get('/', 'CoreController.index', [LoggerMiddleware])
