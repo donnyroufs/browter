@@ -1,4 +1,4 @@
-import { HttpMethod, Middleware } from '../Types'
+import { HttpMethod, Middleware } from './Types'
 
 export interface IRouteContext {
   verb: HttpMethod
