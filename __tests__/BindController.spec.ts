@@ -1,5 +1,5 @@
-import { BindController } from './BindController'
-import { UserController } from './__mocks__/UserController.mock'
+import { BindController } from '../src/BindController'
+import { UserController } from '../__mocks__/UserController.mock'
 
 const userController = new UserController()
 
