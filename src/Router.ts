@@ -9,7 +9,7 @@ import { BindController } from './BindController'
  * returns the created routes in the required type.
  */
 export class Browter<T> implements IBrowter {
-  public routerAdapter: IRouterAdapter
+  public readonly router: IRouterAdapter
 
   private readonly controllers: unknown[] = []
   private readonly options: IBrowterOptions = new Options()
@@ -19,7 +19,7 @@ export class Browter<T> implements IBrowter {
     routerAdapter: IRouterAdapter,
     options?: Partial<IBrowterOptions>
   ) {
-    this.routerAdapter = routerAdapter
+    this.router = routerAdapter
 
     this.options = new Options({ ...DefaultOptions, ...options })
     this.controllers = require(this.options.controllersDir)
@@ -36,18 +36,18 @@ export class Browter<T> implements IBrowter {
    */
   public group(
     namespace: string,
-    callback: (router: Omit<Browter<T>, 'build' | 'routerAdapter'>) => void
+    callback: (router: Omit<Browter<T>, 'build' | 'router'>) => void
   ) {
     const route = this.createRouteFromNamespace(namespace)
 
     const browter = new Browter(
-      this.routerAdapter.create() as any,
+      this.router.create() as any,
       this.options
     ) as Omit<Browter<T>, 'build'>
 
     callback(browter)
 
-    this.routerAdapter.use(route, browter.routerAdapter.router)
+    this.router.use(route, browter.router.router)
   }
 
   /**
@@ -55,7 +55,7 @@ export class Browter<T> implements IBrowter {
    * Returns the actual router based on the used adapter.
    */
   public build() {
-    return this.routerAdapter.build() as T
+    return this.router.build() as T
   }
 
   //#region router methods
@@ -157,7 +157,7 @@ export class Browter<T> implements IBrowter {
       controllers: this.controllers,
     })
 
-    this.routerAdapter.route({
+    this.router.route({
       verb,
       endpoint,
       middleware,
