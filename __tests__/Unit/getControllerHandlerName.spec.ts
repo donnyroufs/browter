@@ -1,4 +1,4 @@
-import { BindController } from '../src/BindController'
+import { BindController } from '../../src/BindController'
 
 describe('GetControllerHandlerName', () => {
   let bindController: BindController

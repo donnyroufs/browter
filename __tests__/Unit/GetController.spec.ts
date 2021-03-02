@@ -1,17 +1,16 @@
-import { BindController } from '../src/BindController'
-import { UserController } from '../__mocks__/UserController.mock'
+import { BindController } from '../../src/BindController'
+import { UserController } from '../../__mocks__/UserController.mock'
 
 const userController = new UserController()
 
 describe('GetController', () => {
   let bindController: BindController
-  let controllerHandler: string = 'UserController.index'
 
   beforeEach(() => {
     bindController = new BindController()
   })
 
-  it('Should work', () => {
+  it('Should return a controller', () => {
     const controller = bindController.getController(
       {
         userController,
