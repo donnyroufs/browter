@@ -1,2 +1,2 @@
 export * from './Router'
-export * from './Adapters/IRouterAdapter'
+export * from './IRouterAdapter'

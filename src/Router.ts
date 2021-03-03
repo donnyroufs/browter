@@ -1,11 +1,7 @@
 import { HttpMethod, IBrowter, IBrowterOptions, Middleware } from './Types'
 import { Options, DefaultOptions } from './Options'
-import { IRouterAdapter } from './Adapters/IRouterAdapter'
-import {
-  MissingDotInHandlerPath,
-  NoControllerException,
-  NoMethodHandlerException,
-} from './Exceptions'
+import { IRouterAdapter } from './IRouterAdapter'
+import { BindController } from './BindController'
 
 /**
  * @description
@@ -13,15 +9,17 @@ import {
  * returns the created routes in the required type.
  */
 export class Browter<T> implements IBrowter {
-  private routerAdapter: IRouterAdapter
-  private controllers: unknown[] = []
-  private options: IBrowterOptions = new Options()
+  public readonly router: IRouterAdapter
+
+  private readonly controllers: unknown[] = []
+  private readonly options: IBrowterOptions = new Options()
+  private readonly bindController: BindController = new BindController()
 
   constructor(
     routerAdapter: IRouterAdapter,
     options?: Partial<IBrowterOptions>
   ) {
-    this.routerAdapter = routerAdapter
+    this.router = routerAdapter
 
     this.options = new Options({ ...DefaultOptions, ...options })
     this.controllers = require(this.options.controllersDir)
@@ -38,18 +36,18 @@ export class Browter<T> implements IBrowter {
    */
   public group(
     namespace: string,
-    callback: (router: Omit<Browter<T>, 'build' | 'routes'>) => void
+    callback: (router: Omit<Browter<T>, 'build' | 'router'>) => void
   ) {
     const route = this.createRouteFromNamespace(namespace)
 
     const browter = new Browter(
-      this.routerAdapter.create() as any,
+      this.router.create() as any,
       this.options
-    )
+    ) as Omit<Browter<T>, 'build'>
 
     callback(browter)
 
-    this.routerAdapter.use(route, browter.routerAdapter.router)
+    this.router.use(route, browter.router.router)
   }
 
   /**
@@ -57,7 +55,7 @@ export class Browter<T> implements IBrowter {
    * Returns the actual router based on the used adapter.
    */
   public build() {
-    return this.routerAdapter.build() as T
+    return this.router.build() as T
   }
 
   //#region router methods
@@ -148,15 +146,18 @@ export class Browter<T> implements IBrowter {
     handlerPath: string,
     middleware: Middleware[] = []
   ) {
-    const [controllerName, handlerName] = this.getControllerAndHandlerName(
-      handlerPath
-    )
-    const routeHandler = this.getRouteHandlerOrThrowException(
+    const [
       controllerName,
-      handlerName
-    )
+      handlerName,
+    ] = this.bindController.getControllerAndHandlerName(handlerPath)
 
-    this.routerAdapter.route({
+    const routeHandler = this.bindController.getRouteHandlerOrThrow({
+      controllerName,
+      handlerName,
+      controllers: this.controllers,
+    })
+
+    this.router.route({
       verb,
       endpoint,
       middleware,
@@ -167,51 +168,5 @@ export class Browter<T> implements IBrowter {
 
   private createRouteFromNamespace(namespace: string) {
     return namespace.charAt(0) === '/' ? namespace : `/${namespace}`
-  }
-
-  private getRouteHandlerOrThrowException(
-    controllerName: string,
-    handlerName: string
-  ) {
-    const controller = this.getController(this.controllers, controllerName)
-
-    if (!controller) {
-      throw new NoControllerException(controllerName)
-    }
-
-    const routeHandler = controller[handlerName]
-
-    if (!routeHandler) {
-      throw new NoMethodHandlerException(controllerName, handlerName)
-    }
-
-    return routeHandler
-  }
-
-  /**
-   * @param handler
-   * String format <controller.routeHandler>
-   * @description
-   * Parses the handler string and gets  the controller
-   * and handler names.
-   */
-  private getControllerAndHandlerName(handler: string) {
-    if (!handler.includes('.')) {
-      throw new MissingDotInHandlerPath()
-    }
-
-    return handler.split('.') as [string, string]
-  }
-
-  private getController(controllers: any, controllerName: string) {
-    const result = Object.entries(controllers).find(
-      ([name]) => name.toLowerCase() === controllerName.toLowerCase()
-    ) as [any, any]
-
-    if (!result) {
-      throw new NoControllerException(controllerName)
-    }
-
-    return result[1]
   }
 }
