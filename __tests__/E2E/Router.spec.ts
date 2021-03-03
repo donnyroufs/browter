@@ -71,7 +71,7 @@ describe('Router', () => {
   })
 
   // Test grouping without making a big mess.
-  // Test invidual routes.
+  // Test individual routes.
   describe('Api Server', () => {
     it('Should respond with json', async (done) => {
       browter.get('/test', 'UserController.test')
